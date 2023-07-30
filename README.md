@@ -98,3 +98,13 @@ Create the API views in the api.py file (learning_notes_app/api.py).
 
 Set up the URL pattern to link the view to an API endpoint in `learning_note_app/urls.py`
 
+
+## 5. Enable `Access-Control-Allow-Origin` (CORS) in Django
+We do this step to enable frontend to make successful requests to backend
+- Install `django-cors-headers` package
+     ```
+     pip install django-cors-headers
+     ```
+
+- Update Django settings in `settings.py`
+- Restart Django development server

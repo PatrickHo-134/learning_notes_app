@@ -10,7 +10,7 @@ db.sqlite3
 *.sqlite3
 *.db
 
-# static files collected during deploymen
+# static files collected during deployment
 staticfiles/
 
 # log files
@@ -28,11 +28,6 @@ __pycache__/
 # local development settings
 local_settings.py
 
-# Node.js related files
-node_modules/
-npm-debug.log
-yarn-error.log
-
 # build artifacts and production files
 build/
 dist/
@@ -42,8 +37,6 @@ dist/
 .vscode/
 .idea/
 
-# compiled css files
-*.js
 
 # cache and log files
 .cache/
@@ -52,3 +45,4 @@ dist/
 # environment variables file
 .env
 
+.DS_Store

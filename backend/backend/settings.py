@@ -40,6 +40,7 @@ INSTALLED_APPS = [
 
     "learning_notes_app.apps.LearningNotesAppConfig",
     "rest_framework",
+    "corsheaders",
 ]
 
 MIDDLEWARE = [
@@ -50,6 +51,36 @@ MIDDLEWARE = [
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
+    "corsheaders.middleware.CorsMiddleware",
+    "django.middleware.common.CommonMiddleware",
+]
+
+# Allow requests from localhost:3000
+CORS_ALLOWED_ORIGINS = [
+    'http://localhost:3000',
+]
+
+# Allow credentials (e.g., cookies, authorization headers) in CORS requests
+# Set this to True if your frontend sends cookies or needs access to authorization headers
+CORS_ALLOW_CREDENTIALS = True
+
+# Allow specific HTTP methods in CORS requests
+# You can customize this based on your backend API requirements
+CORS_ALLOW_METHODS = [
+    'GET',
+    'POST',
+    'PUT',
+    'PATCH',
+    'DELETE',
+    'OPTIONS',
+]
+
+# Allow specific HTTP headers in CORS requests
+# You can customize this based on your backend API requirements
+CORS_ALLOW_HEADERS = [
+    'Accept',
+    'Content-Type',
+    'Authorization',
 ]
 
 ROOT_URLCONF = "backend.urls"
