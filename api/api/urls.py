@@ -1,5 +1,5 @@
 """
-URL configuration for backend project.
+URL configuration for api project.
 
 The `urlpatterns` list routes URLs to views. For more information please see:
     https://docs.djangoproject.com/en/4.2/topics/http/urls/
@@ -20,6 +20,6 @@ from learning_notes_app.api import LearningNoteListView, LearningNoteDetailView
 
 urlpatterns = [
     path("admin/", admin.site.urls),
-    path('api/learning_notes/', LearningNoteListView.as_view(), name='learning-note-list'),
-    path('api/learning_notes/<int:pk>/', LearningNoteDetailView.as_view(), name='learning-note-detail'),
+    path("api/learning_notes/", LearningNoteListView.as_view(), name='learning-note-list'),
+    path("api/learning_notes/<int:pk>/", LearningNoteDetailView.as_view(), name='learning-note-detail'),
 ]

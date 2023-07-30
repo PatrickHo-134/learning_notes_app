@@ -4,8 +4,6 @@ from rest_framework import status
 from .serializers import LearningNoteSerializer
 from .models import LearningNote
 
-# Create your views here.
-
 class LearningNoteCreateView(APIView):
      def get(self, request, pk):
         try:
