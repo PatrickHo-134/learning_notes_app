@@ -1,11 +1,14 @@
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
+from rest_framework.permissions import IsAuthenticated, AllowAny
 from .models import LearningNote
 from .serializers import LearningNoteSerializer
 
 
 class LearningNoteListView(APIView):
+    permission_classes = [IsAuthenticated]  # Require authentication for this view
+
     def get(self, request):
         learning_notes = LearningNote.objects.all()
         serializer = LearningNoteSerializer(learning_notes, many=True)
@@ -15,9 +18,9 @@ class LearningNoteListView(APIView):
         serializer = LearningNoteSerializer(data=request.data)
 
         if serializer.is_valid():
-            serializer.save(user=request.user)
+            user = request.user if request.user.is_authenticated else None
+            serializer.save(user=user)
             return Response(serializer.data, status=status.HTTP_201_CREATED)
-
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 

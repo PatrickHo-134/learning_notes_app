@@ -23,7 +23,7 @@ Run the following command to create a new Django app within your project
 `python3 manage.py startapp learning_notes_app`
 
 ### Configure the project so it knows about the new app
-- In backend/settings.py by adding the following code to `INSTALLED_APPS`
+- In **api/settings.py** by adding the following code to `INSTALLED_APPS`
 
 ```python
 INSTALLED_APPS = [
@@ -34,7 +34,7 @@ INSTALLED_APPS = [
 ```
 
 ## Start the development servers:
-- In terminal for backend, run the following command to start the Django development server:
+- In terminal for api, run the following command to start the Django development server:
      - `python3 manage.py runserver`
 
 At this point, you should have your Django backend and React frontend up and running. The Django development server will be accessible at http://localhost:8000
@@ -42,7 +42,7 @@ At this point, you should have your Django backend and React frontend up and run
 # Building backend
 
 ## 1. Define Django models
-Inside backend folder, open `learning_notes_app/models.py` in learning_notes_app.
+Inside api folder, open `learning_notes_app/models.py` in learning_notes_app.
 
 Import necessary modules and define models for our data including `User` class and `LearningNote` class
 
@@ -89,3 +89,11 @@ We do this step to enable frontend to make successful requests to backend
 
 - Update Django settings in `settings.py`
 - Restart Django development server
+
+## 6. Set up Token-based authentication for the application
+Add `rest_framework.authtoken` to `INSTALLED_APPS` in **settings.py**
+Set `permission_classes` of `LearningNoteListView` to `IsAuthenticated`
+```
+permission_classes = [IsAuthenticated]
+```
+By using `AllowAny`, we allow unauthenticated users to access this view. However, keep in mind that this means anyone can access the learning notes list without authentication.

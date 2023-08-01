@@ -40,8 +40,15 @@ INSTALLED_APPS = [
 
     "learning_notes_app.apps.LearningNotesAppConfig",
     "rest_framework",
+    "rest_framework.authtoken",
     "corsheaders",
 ]
+
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework.authentication.TokenAuthentication',
+    ],
+}
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
