@@ -76,7 +76,7 @@ Create a serializers file: In your Django app, create a new file named **seriali
      - Import the necessary modules and classes
      - Define the LearningNoteSerializer class:
 
-Create the API views in the **api.py** file (learning_notes_app/api.py).
+Create the API views in the **views.py** file (learning_notes_app/views.py).
 
 Set up the URL pattern to link the view to an API endpoint in `learning_note_app/urls.py`
 
@@ -97,3 +97,17 @@ Set `permission_classes` of `LearningNoteListView` to `IsAuthenticated`
 permission_classes = [IsAuthenticated]
 ```
 By using `AllowAny`, we allow unauthenticated users to access this view. However, keep in mind that this means anyone can access the learning notes list without authentication.
+
+## 7. Implement user login feature
+- Ensure that you have the necessary authentication settings in your Django settings. You can use Django's built-in authentication system, which includes authentication backends and authentication middleware.
+- Make sure that the `django.contrib.auth` app is included in your `INSTALLED_APPS`.
+- Configure the authentication backend in your **settings.py** file to use Django's built-in ModelBackend:
+     ```
+     AUTHENTICATION_BACKENDS = [
+     'django.contrib.auth.backends.ModelBackend',
+     ]
+     ```
+- Create a URL pattern for the login view in your `urls.py`
+- Implement the login view (LoginAPIView) in your `views.py`
+
+**If you encounter an error during login such as `no such table: authtoken_token`, you should create and apply missing migrations, including the migration for the `authtoken` app**
