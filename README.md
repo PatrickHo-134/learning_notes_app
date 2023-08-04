@@ -111,3 +111,11 @@ By using `AllowAny`, we allow unauthenticated users to access this view. However
 - Implement the login view (LoginAPIView) in your `views.py`
 
 **If you encounter an error during login such as `no such table: authtoken_token`, you should create and apply missing migrations, including the migration for the `authtoken` app**
+
+## 8. Implement feature for archiving a learning note
+- In **learning_notes_app/models.py**, add the `archived` field to the `LearningNote` model.
+- Then make and apply the migration.
+- Add the `archived` field to `LearningNoteSerializer` in the backend.
+- Update the views to handle archiving.
+- Add the URL pattern to **urls.py** for archiving a learning note.
+
