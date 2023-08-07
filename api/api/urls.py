@@ -23,5 +23,6 @@ urlpatterns = [
     path("api/learning_notes/", LearningNoteListView.as_view(), name='learning-note-list'),
     path("api/learning_notes/<int:pk>/", update_learning_note, name='update-learning-note'),
     path('api/learning_notes/<int:pk>/archive/', archive_learning_note, name='archive-learning-note'),
+    path('api/learning_notes/<int:pk>/delete/', LearningNoteDetailView.as_view(), name='delete-learning-note'),
     path('api/login/', LoginView.as_view(), name='login'),
 ]
