@@ -119,3 +119,9 @@ By using `AllowAny`, we allow unauthenticated users to access this view. However
 - Update the views to handle archiving.
 - Add the URL pattern to **urls.py** for archiving a learning note.
 
+## 9. Implement feature to update a learning note
+- Modify the LearningNote model to allow for the update of the title and content fields
+     - Since we also want to update the `updated_at` timestamp, it's a good idea to override the save method in the model to handle these updates automatically.
+- Create a view in `views.py` file that handles the update of a learning note based on the received data.
+- Add the URL pattern for updating a learning note.
+

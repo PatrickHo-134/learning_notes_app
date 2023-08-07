@@ -54,6 +54,7 @@ class LearningNoteDetailView(APIView):
         learning_note.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
 
+
 @api_view(['POST'])
 @permission_classes([permissions.IsAuthenticated])  # Set required permissions here
 def archive_learning_note(request, pk):
@@ -71,6 +72,25 @@ def archive_learning_note(request, pk):
 
     serializer = LearningNoteSerializer(learning_note)
     return Response(serializer.data, status=status.HTTP_200_OK)
+
+
+@api_view(['PATCH'])
+@permission_classes([permissions.IsAuthenticated])
+def update_learning_note(request, pk):
+    try:
+        learning_note = LearningNote.objects.get(pk=pk)
+    except LearningNote.DoesNotExist:
+        return Response({"error": "Learning note not found."}, status=status.HTTP_404_NOT_FOUND)
+
+    if learning_note.user != request.user:
+        return Response({"error": "You do not have permission to update this learning note."}, status=status.HTTP_403_FORBIDDEN)
+
+    serializer = LearningNoteSerializer(learning_note, data=request.data, partial=True)
+    if serializer.is_valid():
+        serializer.save()
+        return Response(serializer.data, status=status.HTTP_200_OK)
+    else:
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 class LoginView(APIView):
     def post(self, request):
