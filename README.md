@@ -125,3 +125,167 @@ By using `AllowAny`, we allow unauthenticated users to access this view. However
 - Create a view in `views.py` file that handles the update of a learning note based on the received data.
 - Add the URL pattern for updating a learning note.
 
+## 10. Set up user authentication
+
+### Install JWT and setup project
+```
+pip install djangorestframework-simplejwt
+```
+
+Update **settings.py** by addding following code
+```
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
+    )
+}
+```
+
+Update **urls.py** by adding following code
+```
+from rest_framework_simplejwt.views import (
+    TokenObtainPairView,
+)
+```
+Add this line to `urlpatterns`
+```
+path('api/users/login/', MyTokenObtainPairView.as_view(), name='token_obtain_pair'),
+```
+
+Put the following code in **settings.py** to extend lifetime fo `access_token` to 2 days.
+Reference link [here](https://django-rest-framework-simplejwt.readthedocs.io/en/latest/settings.html#access-token-lifetime)
+
+```
+SIMPLE_JWT = {
+    "ACCESS_TOKEN_LIFETIME": timedelta(days=2),
+    "REFRESH_TOKEN_LIFETIME": timedelta(days=1),
+    "ROTATE_REFRESH_TOKENS": False,
+    "BLACKLIST_AFTER_ROTATION": False,
+    "UPDATE_LAST_LOGIN": False,
+
+    "ALGORITHM": "HS256",
+    "VERIFYING_KEY": "",
+    "AUDIENCE": None,
+    "ISSUER": None,
+    "JSON_ENCODER": None,
+    "JWK_URL": None,
+    "LEEWAY": 0,
+
+    "AUTH_HEADER_TYPES": ("Bearer",),
+    "AUTH_HEADER_NAME": "HTTP_AUTHORIZATION",
+    "USER_ID_FIELD": "id",
+    "USER_ID_CLAIM": "user_id",
+    "USER_AUTHENTICATION_RULE": "rest_framework_simplejwt.authentication.default_user_authentication_rule",
+
+    "AUTH_TOKEN_CLASSES": ("rest_framework_simplejwt.tokens.AccessToken",),
+    "TOKEN_TYPE_CLAIM": "token_type",
+    "TOKEN_USER_CLASS": "rest_framework_simplejwt.models.TokenUser",
+
+    "JTI_CLAIM": "jti",
+
+    "SLIDING_TOKEN_REFRESH_EXP_CLAIM": "refresh_exp",
+    "SLIDING_TOKEN_LIFETIME": timedelta(minutes=5),
+    "SLIDING_TOKEN_REFRESH_LIFETIME": timedelta(days=1),
+
+    "TOKEN_OBTAIN_SERIALIZER": "rest_framework_simplejwt.serializers.TokenObtainPairSerializer",
+    "TOKEN_REFRESH_SERIALIZER": "rest_framework_simplejwt.serializers.TokenRefreshSerializer",
+    "TOKEN_VERIFY_SERIALIZER": "rest_framework_simplejwt.serializers.TokenVerifySerializer",
+    "TOKEN_BLACKLIST_SERIALIZER": "rest_framework_simplejwt.serializers.TokenBlacklistSerializer",
+    "SLIDING_TOKEN_OBTAIN_SERIALIZER": "rest_framework_simplejwt.serializers.TokenObtainSlidingSerializer",
+    "SLIDING_TOKEN_REFRESH_SERIALIZER": "rest_framework_simplejwt.serializers.TokenRefreshSlidingSerializer",
+}
+```
+
+### Customizing token claim
+Modify **views.py** and add following code:
+```
+from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
+from rest_framework_simplejwt.views import TokenObtainPairView
+
+class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
+    def validate(self, attrs):
+        data = super().validate(attrs)
+
+        serializer = UserSerializerWithToken(self.user).data
+
+        for k, v in serializer.items():
+            data[k] = v
+
+        return data
+
+class MyTokenObtainPairView(TokenObtainPairView):
+    serializer_class = MyTokenObtainPairSerializer
+```
+
+### Create `UserSerializer`
+Add this code to **serializer.py**
+```
+class UserSerializer(serializers.ModelSerializer):
+    name = serializers.SerializerMethodField(read_only=True)
+    isAdmin = serializers.SerializerMethodField(read_only=True)
+    class Meta:
+        model = User
+        fields = ['id', 'username', 'email', 'name', 'isAdmin']
+
+    def get_isAdmin(self, obj):
+        return obj.is_staff
+
+    def get_name(self, obj):
+        name = obj.first_name
+
+        if name == '':
+            name = obj.email
+        return name
+
+class UserSerializerWithToken(UserSerializer):
+    token = serializers.SerializerMethodField(read_only=True)
+    class Meta:
+        model = User
+        fields = ['id', 'username', 'email', 'name', 'isAdmin', 'token']
+
+    def get_token(self, obj):
+        token = RefreshToken.for_user(obj)
+        return str(token.access_token)
+```
+
+Create a view to get user's profile in **views.py**
+```
+@api_view(['GET'])
+def getUserProfile(request):
+    user = request.user
+    serializer = UserSerializer(user, many=False)
+    return Response(serializer.data)
+```
+
+Add a new url in **urls.py** for getting user's profile
+```
+path('api/users/profile/', getUserProfile, name='user-profile'),
+```
+
+### Implement protected routes
+Add IsAdminUser, AllowAny, IsAdminUser to relevant routes such as
+```
+@api_view(['GET'])
+@permission_classes([IsAdminUser])
+def getUserProfile(request):
+    ...
+```
+
+### Implement feature to register users
+- Create registerUser view
+    + Hash password before saving
+- Create a new url for registerUser view
+- Create a custom error handler for registerUser view
+
+### Login with email
+- Configure the system to login with an email instead of a username
+    + Use Django signal to trigger a signal to copy email to username
+- Create **signal.py**
+- Add this code to apps.py
+```
+class LearningNotesAppConfig(AppConfig):
+    ...
+
+    def ready(self):
+        import learning_notes_app.signals
+```

@@ -16,13 +16,19 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
-from learning_notes_app.views import LearningNoteListView, LearningNoteDetailView, LoginView, archive_learning_note, update_learning_note
+from learning_notes_app import views
 
 urlpatterns = [
     path("admin/", admin.site.urls),
-    path("api/learning_notes/", LearningNoteListView.as_view(), name='learning-note-list'),
-    path("api/learning_notes/<int:pk>/", update_learning_note, name='update-learning-note'),
-    path('api/learning_notes/<int:pk>/archive/', archive_learning_note, name='archive-learning-note'),
-    path('api/learning_notes/<int:pk>/delete/', LearningNoteDetailView.as_view(), name='delete-learning-note'),
-    path('api/login/', LoginView.as_view(), name='login'),
+
+    path('api/users/login/', views.MyTokenObtainPairView.as_view(), name='token-obtain-pair'),
+    path('api/users/register/', views.registerUser, name='regiter-user'),
+    path('api/users/profile/', views.getUserProfile, name='user-profile'),
+    path('api/users/', views.getUsers, name='user-profile'),
+
+    path("api/timeline/<int:pk>/", views.fetch_timeline, name='timeline'),
+    path("api/learning_notes/create/<int:userId>/", views.add_learning_note, name='add-learning-note'),
+    path("api/learning_notes/update/<int:pk>/", views.update_learning_note, name='update-learning-note'),
+    path('api/learning_notes/<int:pk>/archive/', views.archive_learning_note, name='archive-learning-note'),
+    path('api/learning_notes/<int:pk>/delete/', views.LearningNoteDetailView.as_view(), name='delete-learning-note'),
 ]
