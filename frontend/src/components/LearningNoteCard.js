@@ -10,6 +10,8 @@ import {
   MenuItem,
 } from "@mui/material";
 import { MoreVert as MoreVertIcon } from "@mui/icons-material";
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+import ExpandLessIcon from '@mui/icons-material/ExpandLess';
 import moment from "moment";
 import {
   archiveLearningNote,
@@ -22,6 +24,7 @@ const LearningNoteCard = ({ learningNote }) => {
   const { user, created_at, title, content, updated_at } = learningNote;
   const [anchorEl, setAnchorEl] = useState(null);
   const [showEditModal, setShowEditModal] = useState(false);
+  const [isContentVisible, setIsContentVisible] = useState(false);
   const userInfo = useSelector((state) => state.userLogin.userInfo);
   const dispatch = useDispatch();
 
@@ -48,14 +51,26 @@ const LearningNoteCard = ({ learningNote }) => {
     handleMenuClose();
   };
 
+  const toggleContentVisibility = () => {
+    setIsContentVisible(!isContentVisible);
+  };
+
   return (
     <Card variant="outlined" sx={{ marginBottom: "1rem" }} gutterBottom>
       <CardContent>
         <CardHeader
           action={
-            <IconButton aria-label="settings" onClick={handleMenuOpen}>
-              <MoreVertIcon />
-            </IconButton>
+            <div>
+              <IconButton aria-label="settings" onClick={handleMenuOpen}>
+                <MoreVertIcon />
+              </IconButton>
+              <IconButton
+                onClick={toggleContentVisibility}
+                aria-label="toggle content visibility"
+              >
+                {isContentVisible ? <ExpandLessIcon /> : <ExpandMoreIcon />}
+              </IconButton>
+            </div>
           }
           title={
             <div>
@@ -94,7 +109,7 @@ const LearningNoteCard = ({ learningNote }) => {
           sx={{ padding: "0" }}
         />
 
-        <AutoHeightQuill content={content} />
+        {isContentVisible && <AutoHeightQuill content={content} />}
       </CardContent>
 
       <Menu
