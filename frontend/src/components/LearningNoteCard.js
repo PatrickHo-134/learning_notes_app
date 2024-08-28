@@ -1,17 +1,20 @@
 import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {
+  Box,
   Card,
   CardHeader,
   CardContent,
-  Typography,
   IconButton,
   Menu,
   MenuItem,
+  Popover,
+  Typography,
 } from "@mui/material";
 import { MoreVert as MoreVertIcon } from "@mui/icons-material";
-import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
-import ExpandLessIcon from '@mui/icons-material/ExpandLess';
+import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
+import ExpandLessIcon from "@mui/icons-material/ExpandLess";
+import InfoIcon from "@mui/icons-material/Info";
 import moment from "moment";
 import {
   archiveLearningNote,
@@ -24,7 +27,8 @@ const LearningNoteCard = ({ learningNote }) => {
   const { user, created_at, title, content, updated_at } = learningNote;
   const [anchorEl, setAnchorEl] = useState(null);
   const [showEditModal, setShowEditModal] = useState(false);
-  const [isContentVisible, setIsContentVisible] = useState(false);
+  const [isContentVisible, setIsContentVisible] = useState(false); // Set to false to collapse by default
+  const [popoverAnchorEl, setPopoverAnchorEl] = useState(null);
   const userInfo = useSelector((state) => state.userLogin.userInfo);
   const dispatch = useDispatch();
 
@@ -55,12 +59,21 @@ const LearningNoteCard = ({ learningNote }) => {
     setIsContentVisible(!isContentVisible);
   };
 
+  const handlePopoverClick = (event) => {
+    setPopoverAnchorEl(popoverAnchorEl ? null : event.currentTarget);
+  };
+
+  const isPopoverOpen = Boolean(popoverAnchorEl);
+
   return (
-    <Card variant="outlined" sx={{ marginBottom: "1rem" }} gutterBottom>
+    <Card variant="outlined" sx={{ marginBottom: "1rem" }}>
       <CardContent>
         <CardHeader
           action={
             <div>
+              <IconButton aria-label="information" onClick={handlePopoverClick}>
+                <InfoIcon />
+              </IconButton>
               <IconButton aria-label="settings" onClick={handleMenuOpen}>
                 <MoreVertIcon />
               </IconButton>
@@ -82,28 +95,6 @@ const LearningNoteCard = ({ learningNote }) => {
               >
                 {title}
               </Typography>
-
-              <Typography
-                variant="caption"
-                component="pre"
-                style={{ whiteSpace: "pre-line" }}
-                gutterBottom
-              >
-                Date Created:{" "}
-                {moment(created_at).format("MMMM Do YYYY, h:mm a")}
-              </Typography>
-
-              {updated_at && (
-                <Typography
-                  variant="caption"
-                  component="pre"
-                  style={{ whiteSpace: "pre-line" }}
-                  gutterBottom
-                >
-                  Date Updated:{" "}
-                  {moment(updated_at).format("MMMM Do YYYY, h:mm a")}
-                </Typography>
-              )}
             </div>
           }
           sx={{ padding: "0" }}
@@ -121,6 +112,34 @@ const LearningNoteCard = ({ learningNote }) => {
         <MenuItem onClick={handleArchive}>Archive</MenuItem>
         <MenuItem onClick={handleDelete}>Delete</MenuItem>
       </Menu>
+
+      <Popover
+        open={isPopoverOpen}
+        anchorEl={popoverAnchorEl}
+        onClose={handlePopoverClick}
+        anchorOrigin={{
+          vertical: "bottom",
+          horizontal: "left",
+        }}
+        transformOrigin={{
+          vertical: "top",
+          horizontal: "left",
+        }}
+        disableRestoreFocus
+      >
+        <Box sx={{ padding: 1 }}>
+          <Typography variant="caption">
+            Created: {moment(created_at).format("MMMM Do YYYY, h:mm a")}
+          </Typography>
+          {updated_at && (
+            <Typography variant="caption">
+              <br />
+              Updated: {moment(updated_at).format("MMMM Do YYYY, h:mm a")}
+            </Typography>
+          )}
+        </Box>
+      </Popover>
+
       {showEditModal && (
         <EditLearningNoteModal
           learningNote={learningNote}
