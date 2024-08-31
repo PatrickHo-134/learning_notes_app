@@ -14,6 +14,14 @@ from django.utils import timezone
 #     def __str__(self):
 #         return f"{self.first_name} {self.last_name}"
 
+class Label(models.Model):
+    name = models.CharField(max_length=100, unique=True)
+    color = models.CharField(max_length=7) # for storing hex color codes
+    created_by = models.ForeignKey(User, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return self.name
+
 class LearningNote(models.Model):
     id = models.AutoField(primary_key=True, editable=False)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
@@ -22,6 +30,15 @@ class LearningNote(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now_add=True)
     archived = models.BooleanField(default=False)
+    labels = models.ManyToManyField(Label, related_name='learning_notes')
+
+    class Meta:
+        ordering = ['-created_at']  # Order notes by most recent first
+        verbose_name = 'Learning Note'
+        verbose_name_plural = 'Learning Notes'
+        indexes = [
+            models.Index(fields=['user', 'created_at']),
+        ]
 
     def __str__(self):
         return self.title
