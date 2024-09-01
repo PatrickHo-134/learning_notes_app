@@ -5,6 +5,7 @@ import {
   Card,
   CardHeader,
   CardContent,
+  Chip,
   IconButton,
   Menu,
   MenuItem,
@@ -23,13 +24,33 @@ import {
 import EditLearningNoteModal from "./EditLearningNoteModal";
 import { AutoHeightQuill } from "./ReactQuill";
 
+function renderLabel(labelId, labelList) {
+  const labelInfo = labelList.find((x) => x.id === labelId);
+  if (!labelInfo || !labelInfo.name) {
+    return null;
+  } else {
+    return (
+      <Chip
+        key={labelInfo.id}
+        label={labelInfo.name}
+        style={{
+          backgroundColor: labelInfo.color,
+          marginRight: "0.5rem",
+          marginBottom: "0.5rem",
+        }}
+      />
+    );
+  }
+}
+
 const LearningNoteCard = ({ learningNote }) => {
-  const { user, created_at, title, content, updated_at } = learningNote;
+  const { user, created_at, title, content, updated_at, labels } = learningNote;
   const [anchorEl, setAnchorEl] = useState(null);
   const [showEditModal, setShowEditModal] = useState(false);
   const [isContentVisible, setIsContentVisible] = useState(false); // Set to false to collapse by default
   const [popoverAnchorEl, setPopoverAnchorEl] = useState(null);
   const userInfo = useSelector((state) => state.userLogin.userInfo);
+  const labelList = useSelector((state) => state.labelList.labels);
   const dispatch = useDispatch();
 
   const handleMenuOpen = (event) => {
@@ -99,7 +120,13 @@ const LearningNoteCard = ({ learningNote }) => {
           }
           sx={{ padding: "0" }}
         />
-
+        <div style={{ margin: "1rem 0" }}>
+          {labels.length > 0 ? (
+            labels.map((labelId) => renderLabel(labelId, labelList))
+          ) : (
+            <div></div> // Button to add labels here
+          )}
+        </div>
         {isContentVisible && <AutoHeightQuill content={content} />}
       </CardContent>
 

@@ -42,7 +42,7 @@ const AddLearningNoteModal = () => {
   return (
     <div>
       <Button
-        color="success"
+        color="info"
         variant="contained"
         aria-label="Add new note"
         onClick={toggleModal}
