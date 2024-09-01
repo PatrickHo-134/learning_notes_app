@@ -12,10 +12,7 @@ const LearningNoteList = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const learningNotes = useSelector((state) => state.learningNotes.learningNotes);
-  const userInfoFromState = useSelector((state) => state.userLogin.userInfo);
-  const userInfoFromLocalStorage = JSON.parse(localStorage.getItem('userInfo'));
-  // FIXME: fix issue with persisting data in Redux state so we can get it from state instead of localstorage
-  const userInfo = userInfoFromLocalStorage;
+  const userInfo = useSelector((state) => state.userLogin.userInfo);
 
   useEffect(() => {
     if (userInfo){

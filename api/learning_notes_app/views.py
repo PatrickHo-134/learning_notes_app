@@ -106,9 +106,9 @@ def add_learning_note(request, userId):
             return Response({'error': 'Invalid credentials'}, status=status.HTTP_401_UNAUTHORIZED)
         else:
             learning_note = serializer.save(user=user)
-            labels = request.data.get('labels')
-            if labels:
-                learning_note.labels.set(labels)
+            learning_note_labels = request.data.get('labels')
+            if learning_note_labels:
+                learning_note.labels.set(learning_note_labels)
             return Response(serializer.data, status=status.HTTP_201_CREATED)
     else:
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
@@ -126,7 +126,9 @@ def update_learning_note(request, pk):
 
     serializer = LearningNoteSerializer(learning_note, data=request.data, partial=True)
     if serializer.is_valid():
-        serializer.save()
+        learning_note = serializer.save()
+        learning_note_labels = request.data.get('labels')
+        learning_note.labels.set(learning_note_labels)
         return Response(serializer.data, status=status.HTTP_200_OK)
     else:
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

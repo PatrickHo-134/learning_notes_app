@@ -11,12 +11,14 @@ const AddLearningNoteModal = () => {
   const [modalOpen, setModalOpen] = useState(false);
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
+  const [labels, setLabels] = useState([]);
   const userInfo = useSelector((state) => state.userLogin.userInfo);
 
   const toggleModal = () => {
     setModalOpen(!modalOpen);
     setTitle("");
     setContent("");
+    setLabels([]);
   };
 
   const handleAddNote = async () => {
@@ -25,6 +27,7 @@ const AddLearningNoteModal = () => {
       content,
       created_at: new Date().toISOString(),
       user: userInfo.id,
+      labels,
     };
 
     try {
