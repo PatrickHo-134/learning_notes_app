@@ -36,4 +36,6 @@ urlpatterns = [
          views.archive_learning_note, name='archive-learning-note'),
     path('api/learning_notes/<int:pk>/delete/',
          views.delete_learning_note, name='delete-learning-note'),
+
+    path('api/labels/<int:pk>/', views.label_list, name='label-list')
 ]

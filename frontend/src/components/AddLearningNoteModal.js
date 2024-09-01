@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Button, Modal, Box, TextField } from "@mui/material";
-import AddIcon from "@mui/icons-material/Add";
 
 import { createLearningNote } from "../actions/learningNoteActions";
 import { NoteContent } from "./ReactQuill";
@@ -46,10 +45,10 @@ const AddLearningNoteModal = () => {
         color="success"
         variant="contained"
         aria-label="Add new note"
-        endicon={<AddIcon />}
         onClick={toggleModal}
+        style={{ marginBottom: '1rem' }}
       >
-        <AddIcon />
+        + Add a card
       </Button>
 
       <Modal open={modalOpen} onClose={toggleModal}>

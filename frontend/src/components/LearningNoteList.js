@@ -7,6 +7,8 @@ import {
 import { fetchLearningNotes, createLearningNote } from '../actions/learningNoteActions';
 import LearningNoteCard from './LearningNoteCard';
 import AddLearningNoteModal from './AddLearningNoteModal';
+import LabelList from './LabelList';
+import { fetchLabels } from '../actions/labelActions';
 
 const LearningNoteList = () => {
   const dispatch = useDispatch();
@@ -16,7 +18,8 @@ const LearningNoteList = () => {
 
   useEffect(() => {
     if (userInfo){
-      dispatch(fetchLearningNotes(userInfo));
+      dispatch(fetchLearningNotes(userInfo))
+      dispatch(fetchLabels(userInfo));
     } else {
       navigate("/");
     }
@@ -29,6 +32,7 @@ const LearningNoteList = () => {
   return (
     <Container maxWidth="md">
       <h1>Timeline</h1>
+      <LabelList />
       <AddLearningNoteModal onAddNote={handleAddNote} />
       {learningNotes.length === 0 ? (
         <p>Your Timeline is empty. Let's create your first note.</p>

@@ -9,8 +9,8 @@ from rest_framework_simplejwt.views import TokenObtainPairView
 from django.contrib.auth import authenticate
 from django.contrib.auth.models import User
 from django.contrib.auth.hashers import make_password
-from .models import LearningNote, User
-from .serializers import LearningNoteSerializer, UserSerializer, UserSerializerWithToken
+from .models import LearningNote, User, Label
+from .serializers import LearningNoteSerializer, UserSerializer, UserSerializerWithToken, LabelSerializer
 
 
 #################
@@ -63,6 +63,18 @@ def registerUser(request):
     except:
         message = {'detail':'User with this email already exists'}
         return Response(message, status=status.HTTP_400_BAD_REQUEST)
+
+
+###########
+#### LABELS
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def label_list(request, pk):
+    labels = Label.objects.filter(created_by=pk)
+    serializer = LabelSerializer(labels, many=True)
+
+    return Response(serializer.data)
 
 
 ##########################
@@ -149,3 +161,4 @@ def delete_learning_note(request, pk):
 
     serializer = LearningNoteSerializer(learning_note)
     return Response(serializer.data, status=status.HTTP_200_OK)
+
