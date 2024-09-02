@@ -1,4 +1,5 @@
 import axios from "axios";
+import { BASE_URL } from "../appConstants";
 
 //// FETCH LEARNING NOTES
 // Action Types
@@ -25,7 +26,7 @@ export const fetchLearningNotes = (userInfo) => {
   return (dispatch) => {
     dispatch(fetchLearningNotesRequest());
     axios
-      .get(`http://127.0.0.1:8000/api/timeline/${userInfo.id}/`, {
+      .get(`${BASE_URL}/api/timeline/${userInfo.id}/`, {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
@@ -73,7 +74,7 @@ export const createLearningNote = (newLearningNote, userInfo) => {
   return (dispatch) => {
     dispatch(createLearningNoteRequest());
     axios
-      .post(`http://localhost:8000/api/learning_notes/create/${id}/`, newLearningNote, {
+      .post(`${BASE_URL}/api/learning_notes/create/${id}/`, newLearningNote, {
         headers: headers,
       })
       .then((response) => {
@@ -117,7 +118,7 @@ export const archiveLearningNote = (noteId, userInfo) => {
     dispatch(archiveLearningNoteRequest());
 
     axios
-      .post(`http://localhost:8000/api/learning_notes/${noteId}/archive/`, null, {
+      .post(`${BASE_URL}/api/learning_notes/${noteId}/archive/`, null, {
         headers: headers,
       })
       .then((response) => {
@@ -163,7 +164,7 @@ export const deleteLearningNote = (noteId, userInfo) => {
     dispatch(deleteLearningNoteRequest());
 
     axios
-      .delete(`http://localhost:8000/api/learning_notes/${noteId}/delete/`, {
+      .delete(`${BASE_URL}/api/learning_notes/${noteId}/delete/`, {
         headers: headers,
       })
       .then((response) => {
@@ -210,7 +211,7 @@ export const updateLearningNote = (noteId, data, userInfo) => {
   return (dispatch) => {
     dispatch(updateLearningNoteRequest());
     axios
-      .patch(`http://localhost:8000/api/learning_notes/update/${noteId}/`, data, {
+      .patch(`${BASE_URL}/api/learning_notes/update/${noteId}/`, data, {
         headers: headers,
       })
       .then((response) => {

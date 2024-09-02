@@ -121,7 +121,7 @@ const LearningNoteCard = ({ learningNote }) => {
           sx={{ padding: "0" }}
         />
         <div style={{ margin: "1rem 0" }}>
-          {labels.length > 0 ? (
+          {(labels.length > 0 && labelList) ? (
             labels.map((labelId) => renderLabel(labelId, labelList))
           ) : (
             <div></div> // Button to add labels here

@@ -1,4 +1,5 @@
 import axios from "axios";
+import { BASE_URL } from "../appConstants";
 
 export const LABELS_FETCH_REQUEST = "LABELS_FETCH_REQUEST";
 export const LABELS_FETCH_SUCCESS = "LABELS_FETCH_SUCCESS";
@@ -8,7 +9,7 @@ export const fetchLabels = (userInfo) => async (dispatch) => {
   try {
     dispatch({ type: LABELS_FETCH_REQUEST });
 
-    const { data } = await axios.get(`http://127.0.0.1:8000/api/labels/${userInfo.id}/`, {
+    const { data } = await axios.get(`${BASE_URL}/api/labels/${userInfo.id}/`, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",

@@ -1,4 +1,5 @@
 import axios from "axios";
+import { BASE_URL } from "../appConstants";
 
 // user login
 
@@ -32,7 +33,7 @@ export const login = (email, password) => {
     try {
       // Make the API call to your backend to authenticate the user
       const response = await axios.post(
-        "http://127.0.0.1:8000/api/users/login/",
+        `${BASE_URL}/api/users/login/`,
         { username: email, password: password }
       );
 
@@ -70,7 +71,7 @@ export const register = (firstName, lastName, email, password) => {
 
     try {
       const response = await axios.post(
-        "http://127.0.0.1:8000/api/users/register/",
+        `${BASE_URL}/api/users/register/`,
         { 'first_name': firstName, 'last_name': lastName, 'email': email, 'password': password }
       );
 
