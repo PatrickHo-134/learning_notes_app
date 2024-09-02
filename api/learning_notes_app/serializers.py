@@ -37,7 +37,7 @@ class UserSerializerWithToken(UserSerializer):
 class LabelSerializer(serializers.ModelSerializer):
     class Meta:
         model = Label
-        fields = ['id', 'name', 'color']
+        fields = '__all__'
 
 class LearningNoteSerializer(serializers.ModelSerializer):
     labels = serializers.PrimaryKeyRelatedField(many=True, queryset=Label.objects.all())

@@ -44,7 +44,7 @@ function renderLabel(labelId, labelList) {
 }
 
 const LearningNoteCard = ({ learningNote }) => {
-  const { user, created_at, title, content, updated_at, labels } = learningNote;
+  const { created_at, title, content, updated_at, labels } = learningNote;
   const [anchorEl, setAnchorEl] = useState(null);
   const [showEditModal, setShowEditModal] = useState(false);
   const [isContentVisible, setIsContentVisible] = useState(false); // Set to false to collapse by default

@@ -13,7 +13,7 @@ const RegisterPage = () => {
   const [confirmPassword, setConfirmPassword] = useState("");
 
   const userRegister = useSelector((state) => state.userRegister);
-  const { error, loading, userInfo } = userRegister;
+  const { userInfo } = userRegister;
 
   const dispatch = useDispatch();
   const navigate = useNavigate();

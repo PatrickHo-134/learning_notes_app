@@ -107,7 +107,6 @@ export const archiveLearningNoteFailure = (error) => {
 };
 
 export const archiveLearningNote = (noteId, userInfo) => {
-  console.log(userInfo);
   const { token } = userInfo;
   const headers = {
     "Content-Type": "application/json",

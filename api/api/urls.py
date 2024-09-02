@@ -37,5 +37,6 @@ urlpatterns = [
     path('api/learning_notes/<int:pk>/delete/',
          views.delete_learning_note, name='delete-learning-note'),
 
-    path('api/labels/<int:pk>/', views.label_list, name='label-list')
+    path('api/labels/<int:pk>/', views.label_list, name='label-list'),
+    path('api/labels/create/', views.create_label, name='create-label'),
 ]

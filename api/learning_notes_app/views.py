@@ -76,6 +76,15 @@ def label_list(request, pk):
 
     return Response(serializer.data)
 
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def create_label(request):
+    serializer = LabelSerializer(data=request.data)
+    if serializer.is_valid():
+        serializer.save()
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
+    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
 
 ##########################
 #### LEARNING NOTE SECTION
