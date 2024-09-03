@@ -43,7 +43,6 @@ export const fetchLearningNotes = (userInfo) => {
   };
 };
 
-
 //// CREATE LEARNING NOTES
 
 export const CREATE_LEARNING_NOTE_REQUEST = "CREATE_LEARNING_NOTE_REQUEST";
@@ -86,7 +85,6 @@ export const createLearningNote = (newLearningNote, userInfo) => {
       });
   };
 };
-
 
 //// ARCHIVE LEARNING NOTES
 
@@ -133,7 +131,6 @@ export const archiveLearningNote = (noteId, userInfo) => {
   };
 };
 
-
 //// DELETE LEARNING NOTES
 
 export const DELETE_LEARNING_NOTE_REQUEST = "DELETE_LEARNING_NOTE_REQUEST";
@@ -179,7 +176,6 @@ export const deleteLearningNote = (noteId, userInfo) => {
   };
 };
 
-
 //// UPDATE LEARNING NOTES
 
 export const UPDATE_LEARNING_NOTE_REQUEST = "UPDATE_LEARNING_NOTE_REQUEST";
@@ -218,7 +214,42 @@ export const updateLearningNote = (noteId, data, userInfo) => {
         dispatch(updateLearningNoteSuccess(updatedLearningNote));
       })
       .catch((error) => {
-        dispatch(updateLearningNoteFailure('Failed to update learning note. Please try again.'));
+        dispatch(
+          updateLearningNoteFailure(
+            "Failed to update learning note. Please try again."
+          )
+        );
       });
   };
 };
+
+export const ADD_LABEL_TO_NOTE_SUCCESS = "ADD_LABEL_TO_NOTE_SUCCESS";
+
+export const addLabelToLearningNote =
+  (noteId, labelId) => async (dispatch, getState) => {
+    const {
+      userLogin: { userInfo },
+    } = getState();
+
+    try {
+      const config = {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${userInfo.token}`,
+        },
+      };
+
+      await axios.put(
+        `${BASE_URL}/api/learning-notes/${noteId}/add-label/`,
+        { labelId },
+        config
+      );
+
+      dispatch({
+        type: ADD_LABEL_TO_NOTE_SUCCESS,
+        payload: { labelId: labelId, noteId: noteId },
+      });
+    } catch (error) {
+      // handle error appropriately
+    }
+  };

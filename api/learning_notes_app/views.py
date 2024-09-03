@@ -14,7 +14,7 @@ from .serializers import LearningNoteSerializer, UserSerializer, UserSerializerW
 
 
 #################
-#### USER SECTION
+# USER SECTION
 
 class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
     def validate(self, attrs):
@@ -27,8 +27,10 @@ class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
 
         return data
 
+
 class MyTokenObtainPairView(TokenObtainPairView):
     serializer_class = MyTokenObtainPairSerializer
+
 
 @api_view(['GET'])
 @permission_classes([IsAdminUser])
@@ -37,6 +39,7 @@ def getUserProfile(request):
     serializer = UserSerializer(user, many=False)
     return Response(serializer.data)
 
+
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
 def getUsers(request):
@@ -44,29 +47,30 @@ def getUsers(request):
     serializer = UserSerializer(users, many=True)
     return Response(serializer.data)
 
+
 @api_view(['POST'])
 def registerUser(request):
     data = request.data
 
     try:
         user = User.objects.create(
-            first_name = data['first_name'],
-            last_name = data['last_name'],
-            username = data['email'],
-            email = data['email'],
-            password = make_password(data['password'])
+            first_name=data['first_name'],
+            last_name=data['last_name'],
+            username=data['email'],
+            email=data['email'],
+            password=make_password(data['password'])
         )
 
         serializer = UserSerializerWithToken(user, many=False)
 
         return Response(serializer.data)
     except:
-        message = {'detail':'User with this email already exists'}
+        message = {'detail': 'User with this email already exists'}
         return Response(message, status=status.HTTP_400_BAD_REQUEST)
 
 
 ###########
-#### LABELS
+# LABELS
 
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
@@ -75,6 +79,7 @@ def label_list(request, pk):
     serializer = LabelSerializer(labels, many=True)
 
     return Response(serializer.data)
+
 
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
@@ -87,15 +92,17 @@ def create_label(request):
 
 
 ##########################
-#### LEARNING NOTE SECTION
+# LEARNING NOTE SECTION
 
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
 def fetch_timeline(request, pk):
-    learning_notes = LearningNote.objects.filter(archived=False, user=pk).order_by('-created_at')
+    learning_notes = LearningNote.objects.filter(
+        archived=False, user=pk).order_by('-created_at')
     serializer = LearningNoteSerializer(learning_notes, many=True)
 
     return Response(serializer.data)
+
 
 @api_view(['POST'])
 @permission_classes([permissions.IsAuthenticated])
@@ -114,6 +121,7 @@ def archive_learning_note(request, pk):
 
     serializer = LearningNoteSerializer(learning_note)
     return Response(serializer.data, status=status.HTTP_200_OK)
+
 
 @api_view(['POST'])
 @permission_classes([permissions.IsAuthenticated])
@@ -134,6 +142,7 @@ def add_learning_note(request, userId):
     else:
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+
 @api_view(['PATCH'])
 @permission_classes([permissions.IsAuthenticated])
 def update_learning_note(request, pk):
@@ -145,7 +154,8 @@ def update_learning_note(request, pk):
     if learning_note.user != request.user:
         return Response({"error": "You do not have permission to update this learning note."}, status=status.HTTP_403_FORBIDDEN)
 
-    serializer = LearningNoteSerializer(learning_note, data=request.data, partial=True)
+    serializer = LearningNoteSerializer(
+        learning_note, data=request.data, partial=True)
     if serializer.is_valid():
         learning_note = serializer.save()
         learning_note_labels = request.data.get('labels')
@@ -153,6 +163,7 @@ def update_learning_note(request, pk):
         return Response(serializer.data, status=status.HTTP_200_OK)
     else:
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
 
 @api_view(['DELETE'])
 @permission_classes([permissions.IsAuthenticated])
@@ -171,3 +182,17 @@ def delete_learning_note(request, pk):
     serializer = LearningNoteSerializer(learning_note)
     return Response(serializer.data, status=status.HTTP_200_OK)
 
+
+@api_view(['PUT'])
+@permission_classes([IsAuthenticated])
+def add_label_to_learning_note(request, note_id):
+    user = request.user
+    note = LearningNote.objects.get(id=note_id, user=user)
+    label_id = request.data.get('labelId')
+
+    if label_id:
+        label = Label.objects.get(id=label_id)
+        note.labels.add(label)
+        note.save()
+
+    return Response(status=status.HTTP_200_OK)

@@ -15,41 +15,30 @@ const LabelList = () => {
   }, [dispatch]);
 
   return (
-    <div>
-      <Box
-        sx={{
-          marginTop: "1rem",
-          marginBottom: "1rem",
-          display: "flex",
-          flexWrap: "wrap",
-          gap: "0.5rem",
-        }}
-      >
-        <Box
-          sx={{
-            display: "flex",
-            alignItems: "center",
-            gap: "0.5rem",
-            flexWrap: "wrap",
-          }}
-        >
-          {loading ? (
-            <CircularProgress />
-          ) : error ? (
-            <span>{error}</span>
-          ) : (
-            labels.map((label) => (
-              <Chip
-                key={label.id}
-                label={label.name}
-                style={{ backgroundColor: label.color }}
-              />
-            ))
-          )}
-          <LabelForm />
-        </Box>
-      </Box>
-    </div>
+    <Box
+      sx={{
+        display: "flex",
+        alignItems: "center",
+        gap: "0.5rem",
+        flexWrap: "wrap",
+        marginBottom: "1rem",
+      }}
+    >
+      {loading ? (
+        <CircularProgress />
+      ) : error ? (
+        <span>{error}</span>
+      ) : (
+        labels.map((label) => (
+          <Chip
+            key={label.id}
+            label={label.name}
+            style={{ backgroundColor: label.color }}
+          />
+        ))
+      )}
+      <LabelForm />
+    </Box>
   );
 };
 
