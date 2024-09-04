@@ -5,14 +5,16 @@ import {
   Card,
   CardHeader,
   CardContent,
-  Chip,
   IconButton,
   Menu,
   MenuItem,
   Popover,
   Typography,
 } from "@mui/material";
-import { Add as AddIcon, MoreVert as MoreVertIcon } from "@mui/icons-material";
+import {
+  Add as AddIcon,
+  MoreVert as MoreVertIcon,
+} from "@mui/icons-material";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import ExpandLessIcon from "@mui/icons-material/ExpandLess";
 import InfoIcon from "@mui/icons-material/Info";
@@ -21,27 +23,12 @@ import {
   archiveLearningNote,
   deleteLearningNote,
   addLabelToLearningNote,
+  removeLabelFromLearningNote,
 } from "../actions/learningNoteActions";
 import EditLearningNoteModal from "./EditLearningNoteModal";
 import LabelSelectPopover from "./LabelSelectPopover";
+import LearningNoteLabel from "./LearningNoteLabel";
 import { AutoHeightQuill } from "./ReactQuill";
-
-function renderLabel(labelId, labelList) {
-  const labelInfo = labelList.find((x) => x.id === labelId);
-  if (!labelInfo || !labelInfo.name) {
-    return null;
-  } else {
-    return (
-      <Chip
-        key={labelInfo.id}
-        label={labelInfo.name}
-        style={{
-          backgroundColor: labelInfo.color,
-        }}
-      />
-    );
-  }
-}
 
 const LearningNoteCard = ({ learningNote }) => {
   const { id, created_at, title, content, updated_at, labels } = learningNote;
@@ -98,6 +85,10 @@ const LearningNoteCard = ({ learningNote }) => {
     handleLabelPopoverClose();
   };
 
+  const handleRemoveLabel = (labelId) => {
+    dispatch(removeLabelFromLearningNote(id, labelId));
+  };
+
   const isPopoverOpen = Boolean(popoverAnchorEl);
 
   return (
@@ -143,7 +134,14 @@ const LearningNoteCard = ({ learningNote }) => {
           }}
         >
           {labels && labelList ? (
-            labels.map((labelId) => renderLabel(labelId, labelList))
+            labels.map((labelId) => (
+              <LearningNoteLabel
+                key={labelId}
+                labelId={labelId}
+                labelList={labelList}
+                onRemoveLabel={handleRemoveLabel}
+              />
+            ))
           ) : (
             <div></div>
           )}

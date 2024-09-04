@@ -196,3 +196,17 @@ def add_label_to_learning_note(request, note_id):
         note.save()
 
     return Response(status=status.HTTP_200_OK)
+
+@api_view(['PUT'])
+@permission_classes([IsAuthenticated])
+def remove_label_to_learning_note(request, note_id):
+    user = request.user
+    note = LearningNote.objects.get(id=note_id, user=user)
+    label_id = request.data.get('labelId')
+
+    if label_id:
+        label = Label.objects.get(id=label_id)
+        note.labels.remove(label)
+        note.save()
+
+    return Response(status=status.HTTP_200_OK)

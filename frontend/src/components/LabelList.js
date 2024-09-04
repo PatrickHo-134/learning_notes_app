@@ -2,7 +2,7 @@ import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchLabels } from "../actions/labelActions";
 import { CircularProgress, Chip, Box } from "@mui/material";
-import LabelForm from "./LabelComponent";
+import LabelForm from "./LabelForm";
 
 const LabelList = () => {
   const dispatch = useDispatch();

@@ -38,6 +38,8 @@ urlpatterns = [
          views.delete_learning_note, name='delete-learning-note'),
     path('api/learning-notes/<int:note_id>/add-label/',
          views.add_label_to_learning_note, name='add-label-to-learning-note'),
+    path('api/learning-notes/<int:note_id>/remove-label/',
+         views.remove_label_to_learning_note, name='remove-label-from-learning-note'),
 
     path('api/labels/<int:pk>/', views.label_list, name='label-list'),
     path('api/labels/create/', views.create_label, name='create-label'),

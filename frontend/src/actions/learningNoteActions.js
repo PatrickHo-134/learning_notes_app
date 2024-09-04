@@ -253,3 +253,32 @@ export const addLabelToLearningNote =
       // handle error appropriately
     }
   };
+
+export const REMOVE_LABEL_FROM_NOTE_SUCCESS = "REMOVE_LABEL_FROM_NOTE_SUCCESS";
+export const removeLabelFromLearningNote = (noteId, labelId) =>
+async (dispatch, getState) => {
+  const { userLogin: { userInfo },} = getState();
+
+  try {
+    const config = {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${userInfo.token}`,
+      },
+    };
+
+    await axios.put(
+      `${BASE_URL}/api/learning-notes/${noteId}/remove-label/`,
+      { labelId },
+      config
+
+    );
+
+    dispatch({
+      type: REMOVE_LABEL_FROM_NOTE_SUCCESS,
+      payload: { labelId: labelId, noteId: noteId },
+    });
+  } catch (error) {
+    // TODO: handle error here
+  }
+}

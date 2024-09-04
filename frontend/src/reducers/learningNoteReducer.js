@@ -15,6 +15,7 @@ import {
   UPDATE_LEARNING_NOTE_SUCCESS,
   UPDATE_LEARNING_NOTE_FAILURE,
   ADD_LABEL_TO_NOTE_SUCCESS,
+  REMOVE_LABEL_FROM_NOTE_SUCCESS,
 } from "../actions/learningNoteActions";
 import { LOGOUT, REGISTER_SUCCESS } from "../actions/userActions";
 
@@ -100,6 +101,21 @@ const learningNoteReducer = (state = initialState, action) => {
         learningNotes: state.learningNotes.map((note) =>
           note.id === action.payload.noteId
             ? { ...note, labels: [...note.labels, action.payload.labelId] }
+            : note
+        ),
+      };
+
+    case REMOVE_LABEL_FROM_NOTE_SUCCESS:
+      return {
+        ...state,
+        learningNotes: state.learningNotes.map((note) =>
+          note.id === action.payload.noteId
+            ? {
+                ...note,
+                labels: note.labels.filter(
+                  (labelId) => labelId !== action.payload.labelId
+                ),
+              }
             : note
         ),
       };
