@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Button, Modal, Box, TextField } from "@mui/material";
-import AddIcon from "@mui/icons-material/Add";
 
 import { createLearningNote } from "../actions/learningNoteActions";
 import { NoteContent } from "./ReactQuill";
@@ -11,12 +10,14 @@ const AddLearningNoteModal = () => {
   const [modalOpen, setModalOpen] = useState(false);
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
+  const [labels, setLabels] = useState([]);
   const userInfo = useSelector((state) => state.userLogin.userInfo);
 
   const toggleModal = () => {
     setModalOpen(!modalOpen);
     setTitle("");
     setContent("");
+    setLabels([]);
   };
 
   const handleAddNote = async () => {
@@ -25,6 +26,7 @@ const AddLearningNoteModal = () => {
       content,
       created_at: new Date().toISOString(),
       user: userInfo.id,
+      labels,
     };
 
     try {
@@ -40,13 +42,13 @@ const AddLearningNoteModal = () => {
   return (
     <div>
       <Button
-        color="success"
+        color="info"
         variant="contained"
         aria-label="Add new note"
-        endicon={<AddIcon />}
         onClick={toggleModal}
+        style={{ marginBottom: '1rem' }}
       >
-        <AddIcon />
+        + Add a card
       </Button>
 
       <Modal open={modalOpen} onClose={toggleModal}>

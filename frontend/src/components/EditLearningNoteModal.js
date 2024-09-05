@@ -8,11 +8,12 @@ import { NoteContent } from "./ReactQuill";
 const EditLearningNoteModal = ({ learningNote, onClose }) => {
   const [title, setTitle] = useState(learningNote.title);
   const [content, setContent] = useState(learningNote.content);
+  const [labels, setLabels] = useState(learningNote.labels);
   const dispatch = useDispatch();
   const userInfo = useSelector((state) => state.userLogin.userInfo);
 
   const handleSave = () => {
-    dispatch(updateLearningNote(learningNote.id, { title, content }, userInfo));
+    dispatch(updateLearningNote(learningNote.id, { title, content, labels }, userInfo));
     onClose();
   };
 

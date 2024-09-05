@@ -17,7 +17,7 @@ const LoginPage = () => {
      };
 
      const userLogin = useSelector((state) => state.userLogin);
-     const { error, loading, userInfo } = userLogin;
+     const { error, userInfo } = userLogin;
 
      useEffect(() => {
        if (userInfo) {

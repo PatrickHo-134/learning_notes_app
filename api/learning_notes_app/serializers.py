@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import LearningNote, User
+from .models import LearningNote, User, Label
 from rest_framework_simplejwt.tokens import RefreshToken
 
 class UserSerializer(serializers.ModelSerializer):
@@ -34,7 +34,14 @@ class UserSerializerWithToken(UserSerializer):
         token = RefreshToken.for_user(obj)
         return str(token.access_token)
 
+class LabelSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Label
+        fields = '__all__'
+
 class LearningNoteSerializer(serializers.ModelSerializer):
+    labels = serializers.PrimaryKeyRelatedField(many=True, queryset=Label.objects.all())
+
     class Meta:
         model = LearningNote
-        fields = ['id', 'user', 'title', 'content', 'created_at', 'updated_at', 'archived']
+        fields = ['id', 'user', 'title', 'content', 'created_at', 'updated_at', 'archived', 'labels']

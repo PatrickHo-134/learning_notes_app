@@ -11,7 +11,10 @@ import {
   Popover,
   Typography,
 } from "@mui/material";
-import { MoreVert as MoreVertIcon } from "@mui/icons-material";
+import {
+  Add as AddIcon,
+  MoreVert as MoreVertIcon,
+} from "@mui/icons-material";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import ExpandLessIcon from "@mui/icons-material/ExpandLess";
 import InfoIcon from "@mui/icons-material/Info";
@@ -19,17 +22,23 @@ import moment from "moment";
 import {
   archiveLearningNote,
   deleteLearningNote,
+  addLabelToLearningNote,
+  removeLabelFromLearningNote,
 } from "../actions/learningNoteActions";
 import EditLearningNoteModal from "./EditLearningNoteModal";
+import LabelSelectPopover from "./LabelSelectPopover";
+import LearningNoteLabel from "./LearningNoteLabel";
 import { AutoHeightQuill } from "./ReactQuill";
 
 const LearningNoteCard = ({ learningNote }) => {
-  const { user, created_at, title, content, updated_at } = learningNote;
+  const { id, created_at, title, content, updated_at, labels } = learningNote;
   const [anchorEl, setAnchorEl] = useState(null);
   const [showEditModal, setShowEditModal] = useState(false);
   const [isContentVisible, setIsContentVisible] = useState(false); // Set to false to collapse by default
   const [popoverAnchorEl, setPopoverAnchorEl] = useState(null);
+  const [labelPopoverAnchorEl, setLabelPopoverAnchorEl] = useState(null);
   const userInfo = useSelector((state) => state.userLogin.userInfo);
+  const labelList = useSelector((state) => state.labelList.labels);
   const dispatch = useDispatch();
 
   const handleMenuOpen = (event) => {
@@ -61,6 +70,23 @@ const LearningNoteCard = ({ learningNote }) => {
 
   const handlePopoverClick = (event) => {
     setPopoverAnchorEl(popoverAnchorEl ? null : event.currentTarget);
+  };
+
+  const handleLabelPopoverOpen = (event) => {
+    setLabelPopoverAnchorEl(event.currentTarget);
+  };
+
+  const handleLabelPopoverClose = () => {
+    setLabelPopoverAnchorEl(null);
+  };
+
+  const handleAddLabel = (labelId) => {
+    dispatch(addLabelToLearningNote(id, labelId));
+    handleLabelPopoverClose();
+  };
+
+  const handleRemoveLabel = (labelId) => {
+    dispatch(removeLabelFromLearningNote(id, labelId));
   };
 
   const isPopoverOpen = Boolean(popoverAnchorEl);
@@ -99,7 +125,30 @@ const LearningNoteCard = ({ learningNote }) => {
           }
           sx={{ padding: "0" }}
         />
-
+        <Box
+          sx={{
+            display: "flex",
+            alignItems: "center",
+            gap: "0.5rem",
+            flexWrap: "wrap",
+          }}
+        >
+          {labels && labelList ? (
+            labels.map((labelId) => (
+              <LearningNoteLabel
+                key={labelId}
+                labelId={labelId}
+                labelList={labelList}
+                onRemoveLabel={handleRemoveLabel}
+              />
+            ))
+          ) : (
+            <div></div>
+          )}
+          <IconButton onClick={handleLabelPopoverOpen}>
+            <AddIcon />
+          </IconButton>
+        </Box>
         {isContentVisible && <AutoHeightQuill content={content} />}
       </CardContent>
 
@@ -146,6 +195,14 @@ const LearningNoteCard = ({ learningNote }) => {
           onClose={() => setShowEditModal(false)}
         />
       )}
+
+      <LabelSelectPopover
+        anchorEl={labelPopoverAnchorEl}
+        open={Boolean(labelPopoverAnchorEl)}
+        onClose={handleLabelPopoverClose}
+        onLabelSelect={handleAddLabel}
+        currentLabelIds={labels}
+      />
     </Card>
   );
 };

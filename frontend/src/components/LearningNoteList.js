@@ -7,19 +7,19 @@ import {
 import { fetchLearningNotes, createLearningNote } from '../actions/learningNoteActions';
 import LearningNoteCard from './LearningNoteCard';
 import AddLearningNoteModal from './AddLearningNoteModal';
+import LabelList from './LabelList';
+import { fetchLabels } from '../actions/labelActions';
 
 const LearningNoteList = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const learningNotes = useSelector((state) => state.learningNotes.learningNotes);
-  const userInfoFromState = useSelector((state) => state.userLogin.userInfo);
-  const userInfoFromLocalStorage = JSON.parse(localStorage.getItem('userInfo'));
-  // FIXME: fix issue with persisting data in Redux state so we can get it from state instead of localstorage
-  const userInfo = userInfoFromLocalStorage;
+  const userInfo = useSelector((state) => state.userLogin.userInfo);
 
   useEffect(() => {
     if (userInfo){
-      dispatch(fetchLearningNotes(userInfo));
+      dispatch(fetchLearningNotes(userInfo))
+      dispatch(fetchLabels(userInfo));
     } else {
       navigate("/");
     }
@@ -32,6 +32,7 @@ const LearningNoteList = () => {
   return (
     <Container maxWidth="md">
       <h1>Timeline</h1>
+      <LabelList />
       <AddLearningNoteModal onAddNote={handleAddNote} />
       {learningNotes.length === 0 ? (
         <p>Your Timeline is empty. Let's create your first note.</p>
