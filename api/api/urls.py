@@ -43,4 +43,5 @@ urlpatterns = [
 
     path('api/labels/<int:pk>/', views.label_list, name='label-list'),
     path('api/labels/create/', views.create_label, name='create-label'),
+    path('api/labels/delete-label/<int:label_id>/', views.delete_label, name='delete-label'),
 ]

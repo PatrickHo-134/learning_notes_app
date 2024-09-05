@@ -22,6 +22,7 @@ function LearningNoteLabel({ labelId, labelList = [], onRemoveLabel }) {
         style={{
           backgroundColor: labelInfo.color,
           cursor: "pointer",
+          minWidth: "7rem",
         }}
         onMouseEnter={() => setHovered(true)}
         onMouseLeave={() => setHovered(false)}

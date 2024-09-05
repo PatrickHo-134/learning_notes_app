@@ -1,8 +1,9 @@
 import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { fetchLabels } from "../actions/labelActions";
-import { CircularProgress, Chip, Box } from "@mui/material";
+import { fetchLabels, deleteLabel } from "../actions/labelActions";
+import { CircularProgress, Box } from "@mui/material";
 import LabelForm from "./LabelForm";
+import MainLabel from "./MainLabel";
 
 const LabelList = () => {
   const dispatch = useDispatch();
@@ -13,6 +14,10 @@ const LabelList = () => {
   useEffect(() => {
     dispatch(fetchLabels());
   }, [dispatch]);
+
+  const handleRemoveLabel = (labelId) => {
+    dispatch(deleteLabel(labelId));
+  };
 
   return (
     <Box
@@ -30,10 +35,10 @@ const LabelList = () => {
         <span>{error}</span>
       ) : (
         labels.map((label) => (
-          <Chip
+          <MainLabel
             key={label.id}
-            label={label.name}
-            style={{ backgroundColor: label.color }}
+            labelInfo={label}
+            onRemoveLabel={handleRemoveLabel}
           />
         ))
       )}

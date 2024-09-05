@@ -91,6 +91,22 @@ def create_label(request):
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
+@api_view(['DELETE'])
+@permission_classes([IsAuthenticated])
+def delete_label(request, label_id):
+    try:
+        label = Label.objects.get(id=label_id)
+    except Label.DoesNotExist:
+        return Response({"error": "Label not found"}, status=status.HTTP_404_NOT_FOUND)
+
+    if not request.user.has_perm('learning_notes_app.remove_label', label):
+        return Response({"error": "You do not have permission to remove this label"}, status=status.HTTP_403_FORBIDDEN)
+
+    label.delete()
+
+    return Response({'message': 'Label deleted successfully'}, status=status.HTTP_200_OK)
+
+
 ##########################
 # LEARNING NOTE SECTION
 
@@ -196,6 +212,7 @@ def add_label_to_learning_note(request, note_id):
         note.save()
 
     return Response(status=status.HTTP_200_OK)
+
 
 @api_view(['PUT'])
 @permission_classes([IsAuthenticated])

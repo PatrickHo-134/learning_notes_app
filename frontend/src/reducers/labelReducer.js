@@ -4,6 +4,8 @@ import {
   LABELS_FETCH_FAIL,
   LABEL_CREATE_SUCCESS,
   LABEL_CREATE_FAILURE,
+  LABEL_DELETE_SUSSCESS,
+  LABEL_DELETE_FAILURE,
 } from "../actions/labelActions";
 
 const initialState = {
@@ -37,11 +39,20 @@ export const labelListReducer = (state = initialState, action) => {
         loading: false,
       };
     case LABEL_CREATE_FAILURE:
+    case LABEL_DELETE_FAILURE:
       return {
         ...state,
         loading: false,
         error: action.payload,
       };
+    case LABEL_DELETE_SUSSCESS:
+      return {
+        ...state,
+        labels: state.labels.filter(
+          (label) => label.id !== action.payload.labelId
+        ),
+      };
+
     default:
       return state;
   }
